@@ -4,21 +4,34 @@ import java.lang.reflect.Field;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import de.retest.recheck.RecheckLifecycle;
 
+/**
+ * This {@link Rule} calls {@link RecheckLifecycle#startTest()} before and {@link RecheckLifecycle#capTest()} after each
+ * test.
+ */
 public class RecheckRule implements TestRule {
 
 	private final Object testInstance;
 
+	/**
+	 * @param testInstance
+	 *            of junit test using {@link RecheckLifecycle} objects
+	 */
 	public RecheckRule( final Object testInstance ) {
 		super();
 		this.testInstance = testInstance;
 	}
 
+	/**
+	 * Creates a {@link Statement} calling {@link RecheckLifecycle#startTest()} before and
+	 * {@link RecheckLifecycle#capTest()} after evaluating the given {@link Statement}.
+	 */
 	@Override
 	public Statement apply( final Statement base, final Description description ) {
 		return new Statement() {
@@ -62,9 +75,7 @@ public class RecheckRule implements TestRule {
 	}
 
 	private Stream<Field> findRecheckField() {
-		final Class<?> clazz = testInstance.getClass();
-		final Field[] fields = clazz.getDeclaredFields();
-		return Stream.of( fields ).filter( f -> RecheckLifecycle.class.isAssignableFrom( f.getType() ) );
+		return ReflectionUtils.getRecheckFieldsOf( testInstance.getClass() );
 	}
 
 	private void unlock( final Field field ) {

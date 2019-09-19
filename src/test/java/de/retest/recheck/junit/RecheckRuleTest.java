@@ -14,6 +14,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import de.retest.recheck.Recheck;
 import de.retest.recheck.RecheckLifecycle;
 
 @RunWith( MockitoJUnitRunner.class )
@@ -22,8 +23,8 @@ public class RecheckRuleTest {
 	public class DummyTest {
 
 		private Object nonRecheck;
-		private RecheckLifecycle recheck;
-		private RecheckLifecycle otherRecheck;
+		private RecheckLifecycle recheckLifecycle;
+		private Recheck recheck;
 	}
 
 	@Mock
@@ -35,8 +36,8 @@ public class RecheckRuleTest {
 	@Before
 	public void before() {
 		testInstance = new DummyTest();
-		testInstance.recheck = mock( RecheckLifecycle.class );
-		testInstance.otherRecheck = mock( RecheckLifecycle.class );
+		testInstance.recheckLifecycle = mock( RecheckLifecycle.class );
+		testInstance.recheck = mock( Recheck.class );
 		testInstance.nonRecheck = mock( Object.class );
 		description = Description.createTestDescription( testInstance.getClass(), "dummy-instance" );
 		statement = new RecheckRule( testInstance ).apply( base, description );
@@ -44,15 +45,15 @@ public class RecheckRuleTest {
 
 	@Test
 	public void callsLifecycleMethods() throws Throwable {
-		final InOrder inOrder = inOrder( testInstance.recheck, testInstance.otherRecheck, base );
+		final InOrder inOrder = inOrder( testInstance.recheckLifecycle, testInstance.recheck, base );
 
 		statement.evaluate();
 
+		inOrder.verify( testInstance.recheckLifecycle ).startTest( description.getDisplayName() );
 		inOrder.verify( testInstance.recheck ).startTest( description.getDisplayName() );
-		inOrder.verify( testInstance.otherRecheck ).startTest( description.getDisplayName() );
 		inOrder.verify( base ).evaluate();
+		inOrder.verify( testInstance.recheckLifecycle ).capTest();
 		inOrder.verify( testInstance.recheck ).capTest();
-		inOrder.verify( testInstance.otherRecheck ).capTest();
 	}
 
 	@After

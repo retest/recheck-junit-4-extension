@@ -8,21 +8,24 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import de.retest.recheck.RecheckLifecycle;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Finds all {@link Field}s implementing {@link RecheckLifecycle}.
+ * Finds all {@link Field}s matching given {@link Predicate}.
  */
-public class ReflectionUtils {
+@RequiredArgsConstructor
+public class FindFields {
 
-	/**
-	 * Returns a {@link Stream} of all fields of the given {@link Class}, its super classes and the interfaces
-	 * implemented either by the {@link Class} itself or by its super classes.
-	 *
-	 * @param clazz
-	 *            to search for fields
-	 * @return {@link Field}s of the given {@link Class}, its super classes and the implemented interfaces.
-	 */
-	static Stream<Field> getRecheckFieldsOf( final Class<?> clazz ) {
+	public static final Predicate<Field> isRecheckLifecycle =
+			f -> RecheckLifecycle.class.isAssignableFrom( f.getType() );
+
+	private final Predicate<? super Field> predicate;
+
+	public static FindFields matching( final Predicate<? super Field> predicate ) {
+		return new FindFields( predicate );
+	}
+
+	Stream<Field> on( final Class<?> clazz ) {
 		return concat( getFields( clazz ), getSuperClassFieldsOf( clazz ) );
 	}
 
@@ -34,7 +37,7 @@ public class ReflectionUtils {
 	 *            {@link Class} to search for fields
 	 * @return {@link Field}s of the given {@link Class} and the interfaces implemented by the given {@link Class}
 	 */
-	private static Stream<Field> getFields( final Class<?> clazz ) {
+	private Stream<Field> getFields( final Class<?> clazz ) {
 		return concat( getDeclaredFieldsOf( clazz ), getInterfaceFields( clazz ) );
 	}
 
@@ -45,8 +48,8 @@ public class ReflectionUtils {
 	 *            {@link Class} to search for fields
 	 * @return {@link Field}s of interfaces implemented by the given {@link Class}
 	 */
-	private static Stream<Field> getInterfaceFields( final Class<?> clazz ) {
-		return of( clazz.getInterfaces() ).flatMap( ReflectionUtils::getFields );
+	private Stream<Field> getInterfaceFields( final Class<?> clazz ) {
+		return of( clazz.getInterfaces() ).flatMap( this::getFields );
 	}
 
 	/**
@@ -56,7 +59,7 @@ public class ReflectionUtils {
 	 *            {@link Class} to search for fields
 	 * @return {@link Field}s of the super classes of the given {@link Class}
 	 */
-	private static Stream<Field> getSuperClassFieldsOf( final Class<?> clazz ) {
+	private Stream<Field> getSuperClassFieldsOf( final Class<?> clazz ) {
 		if ( null == clazz.getSuperclass() || Object.class.equals( clazz.getSuperclass() ) ) {
 			return getDeclaredFieldsOf( clazz );
 		}
@@ -70,11 +73,7 @@ public class ReflectionUtils {
 	 *            {@link Class} to search for fields
 	 * @return {@link Field}s of the given {@link Class}
 	 */
-	private static Stream<Field> getDeclaredFieldsOf( final Class<?> clazz ) {
-		return Stream.of( clazz.getDeclaredFields() ).filter( isRecheckLifecycle() );
-	}
-
-	private static Predicate<? super Field> isRecheckLifecycle() {
-		return f -> RecheckLifecycle.class.isAssignableFrom( f.getType() );
+	private Stream<Field> getDeclaredFieldsOf( final Class<?> clazz ) {
+		return Stream.of( clazz.getDeclaredFields() ).filter( predicate );
 	}
 }

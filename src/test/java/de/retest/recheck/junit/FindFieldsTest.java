@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ReflectionUtilsTest {
+public class FindFieldsTest {
 
 	private Map<String, Class<?>> recheckFields;
 
@@ -30,18 +30,19 @@ public class ReflectionUtilsTest {
 		recheckFields.put( "someSuperSuperClassField", SuperSuperClass.class );
 		recheckFields.put( "someInterfaceField", DummyInterface.class );
 		recheckFields.put( "someSuperClassInterfaceField", SuperClassInterface.class );
-		assertThat( ReflectionUtils.getRecheckFieldsOf( DummyClass.class ) ).containsOnlyElementsOf( fields() );
+		assertThat( FindFields.matching( FindFields.isRecheckLifecycle ).on( DummyClass.class ) )
+				.containsOnlyElementsOf( fields() );
 	}
 
 	@Test
 	public void doesNotFindNonRecheckLifecycleFields() throws Exception {
-		assertThat( ReflectionUtils.getRecheckFieldsOf( DummyClass.class ) )
+		assertThat( FindFields.matching( FindFields.isRecheckLifecycle ).on( DummyClass.class ) )
 				.doesNotContain( getField( DummyClass.class, "nonRecheckLifecyleField" ) );
 	}
 
 	@Test
 	public void doesNotFailOnTestWithoutFields() throws Exception {
-		ReflectionUtils.getRecheckFieldsOf( EmptyClass.class );
+		FindFields.matching( FindFields.isRecheckLifecycle ).on( EmptyClass.class );
 	}
 
 	private List<Field> fields() throws NoSuchFieldException, SecurityException {

@@ -38,7 +38,7 @@ public class RecheckRule implements TestRule {
 
 			@Override
 			public void evaluate() throws Throwable {
-				before( description );
+				before( description.getDisplayName() );
 				try {
 					base.evaluate();
 				} finally {
@@ -48,10 +48,19 @@ public class RecheckRule implements TestRule {
 		};
 	}
 
-	private void before( final Description description ) throws Throwable {
-		final Consumer<RecheckLifecycle> startTest = r -> r.startTest( description.getDisplayName() );
+	private void before( final String testName ) throws Throwable {
+		final Consumer<RecheckLifecycle> startTest = r -> r.startTest( testName );
+		execute( startTest );
+	}
+
+	private void after() throws IllegalArgumentException, IllegalAccessException {
+		final Consumer<RecheckLifecycle> cap = RecheckLifecycle::capTest;
+		execute( cap );
+	}
+
+	private void execute( final Consumer<RecheckLifecycle> consumer ) {
 		final Stream<Field> field = findRecheckField();
-		field.forEach( f -> execute( startTest, f ) );
+		field.forEach( f -> execute( consumer, f ) );
 	}
 
 	private void execute( final Consumer<RecheckLifecycle> consumer, final Field field ) {
@@ -68,14 +77,8 @@ public class RecheckRule implements TestRule {
 		}
 	}
 
-	private void after() throws IllegalArgumentException, IllegalAccessException {
-		final Stream<Field> field = findRecheckField();
-		final Consumer<RecheckLifecycle> cap = RecheckLifecycle::capTest;
-		field.forEach( f -> execute( cap, f ) );
-	}
-
 	private Stream<Field> findRecheckField() {
-		return ReflectionUtils.getRecheckFieldsOf( testInstance.getClass() );
+		return FindFields.matching( FindFields.isRecheckLifecycle ).on( testInstance.getClass() );
 	}
 
 	private void unlock( final Field field ) {

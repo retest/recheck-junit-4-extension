@@ -21,11 +21,22 @@ public class FindFields {
 
 	private final Predicate<? super Field> predicate;
 
+	/**
+	 * Create instance of {@link FindFields} to find fields matching the given {@link Predicate}.
+	 */
 	public static FindFields matching( final Predicate<? super Field> predicate ) {
 		return new FindFields( predicate );
 	}
 
-	Stream<Field> on( final Class<?> clazz ) {
+	/**
+	 * Returns a {@link Stream} of all fields of the given {@link Class}, its super classes and the interfaces
+	 * implemented either by the {@link Class} itself or by its super classes, matching the specified {@link Predicate}.
+	 *
+	 * @param clazz
+	 *            to search for fields
+	 * @return {@link Field}s of the given {@link Class}, its super classes and the implemented interfaces.
+	 */
+	public Stream<Field> on( final Class<?> clazz ) {
 		return concat( getFields( clazz ), getSuperClassFieldsOf( clazz ) );
 	}
 

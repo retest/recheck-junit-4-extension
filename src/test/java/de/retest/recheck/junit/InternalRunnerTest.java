@@ -11,7 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-public class RecheckJUnitRunnerTest {
+public class InternalRunnerTest {
 
 	@Ignore
 	public static class WithoutRecheckClassRuleTest {
@@ -59,7 +59,7 @@ public class RecheckJUnitRunnerTest {
 
 	@Test
 	public void addsClassRule() throws Exception {
-		final RecheckJUnitRunner runner = new RecheckJUnitRunner( WithoutRecheckClassRuleTest.class );
+		final InternalRunner runner = new InternalRunner( WithoutRecheckClassRuleTest.class );
 
 		final List<TestRule> rules = runner.classRules();
 
@@ -69,7 +69,7 @@ public class RecheckJUnitRunnerTest {
 
 	@Test
 	public void doesNotAddClassRuleIfAlreadyExisting() throws Exception {
-		final RecheckJUnitRunner runner = new RecheckJUnitRunner( WithRecheckClassRuleTest.class );
+		final InternalRunner runner = new InternalRunner( WithRecheckClassRuleTest.class );
 
 		final List<TestRule> rules = runner.classRules();
 
@@ -79,7 +79,7 @@ public class RecheckJUnitRunnerTest {
 	@Test
 	public void addsRule() throws Exception {
 		final WithoutRecheckRuleTest testInstance = new WithoutRecheckRuleTest();
-		final RecheckJUnitRunner runner = new RecheckJUnitRunner( WithoutRecheckRuleTest.class );
+		final InternalRunner runner = new InternalRunner( WithoutRecheckRuleTest.class );
 
 		final List<TestRule> rules = runner.getTestRules( testInstance );
 
@@ -90,7 +90,7 @@ public class RecheckJUnitRunnerTest {
 	@Test
 	public void doesNotAddRuleIfAlreadyExisting() throws Exception {
 		final WithRecheckRuleTest testInstance = new WithRecheckRuleTest();
-		final RecheckJUnitRunner runner = new RecheckJUnitRunner( WithRecheckRuleTest.class );
+		final InternalRunner runner = new InternalRunner( WithRecheckRuleTest.class );
 
 		final List<TestRule> rules = runner.getTestRules( testInstance );
 

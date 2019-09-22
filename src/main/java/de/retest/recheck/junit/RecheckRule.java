@@ -69,9 +69,9 @@ public class RecheckRule implements TestRule {
 		lock( field );
 	}
 
-	private void doExecute( final Consumer<RecheckLifecycle> startTest, final Field field ) {
+	private void doExecute( final Consumer<RecheckLifecycle> consumer, final Field field ) {
 		try {
-			startTest.accept( (RecheckLifecycle) field.get( testInstance ) );
+			consumer.accept( (RecheckLifecycle) field.get( testInstance ) );
 		} catch ( IllegalArgumentException | IllegalAccessException cause ) {
 			throw new RuntimeException( cause );
 		}

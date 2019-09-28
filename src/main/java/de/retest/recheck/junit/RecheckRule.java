@@ -1,14 +1,11 @@
 package de.retest.recheck.junit;
 
-import java.lang.reflect.Field;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import de.retest.recheck.Recheck;
 import de.retest.recheck.RecheckLifecycle;
 
 /**
@@ -17,15 +14,20 @@ import de.retest.recheck.RecheckLifecycle;
  */
 public class RecheckRule implements TestRule {
 
-	private final Object testInstance;
+	private Recheck recheck;
+	private String currentTest;
 
 	/**
-	 * @param testInstance
-	 *            of junit test using {@link RecheckLifecycle} objects
+	 * @param recheck
+	 *            {@link RecheckLifecycle} element to call lifecycle methods on
 	 */
-	public RecheckRule( final Object testInstance ) {
+	public RecheckRule( final Recheck recheck ) {
 		super();
-		this.testInstance = testInstance;
+		this.recheck = recheck;
+	}
+
+	public RecheckRule() {
+		this( null );
 	}
 
 	/**
@@ -38,55 +40,60 @@ public class RecheckRule implements TestRule {
 
 			@Override
 			public void evaluate() throws Throwable {
-				before( description.getDisplayName() );
+				updateCurrentTest( description );
+				before( currentTest );
 				try {
 					base.evaluate();
 				} finally {
 					after();
 				}
 			}
+
 		};
 	}
 
+	private void updateCurrentTest( final Description description ) {
+		currentTest = extractTestName( description );
+	}
+
+	private String extractTestName( final Description description ) {
+		final String baseName = description.getDisplayName();
+		final int index = baseName.indexOf( '(' );
+		return baseName.substring( 0, index );
+	}
+
 	private void before( final String testName ) throws Throwable {
-		final Consumer<RecheckLifecycle> startTest = r -> r.startTest( testName );
-		execute( startTest );
-	}
-
-	private void after() throws IllegalArgumentException, IllegalAccessException {
-		final Consumer<RecheckLifecycle> cap = RecheckLifecycle::capTest;
-		execute( cap );
-	}
-
-	private void execute( final Consumer<RecheckLifecycle> consumer ) {
-		final Stream<Field> field = findRecheckField();
-		field.forEach( f -> execute( consumer, f ) );
-	}
-
-	private void execute( final Consumer<RecheckLifecycle> consumer, final Field field ) {
-		unlock( field );
-		doExecute( consumer, field );
-		lock( field );
-	}
-
-	private void doExecute( final Consumer<RecheckLifecycle> consumer, final Field field ) {
-		try {
-			consumer.accept( (RecheckLifecycle) field.get( testInstance ) );
-		} catch ( IllegalArgumentException | IllegalAccessException cause ) {
-			throw new RuntimeException( cause );
+		if ( null != recheck ) {
+			recheck.startTest( testName );
 		}
 	}
 
-	private Stream<Field> findRecheckField() {
-		return FindFields.matching( FindFields.isRecheckLifecycle ).on( testInstance.getClass() );
+	private void after() throws IllegalArgumentException, IllegalAccessException {
+		verifyRecheckExists();
+		try {
+			recheck.capTest();
+		} finally {
+			recheck.cap();
+		}
 	}
 
-	private void unlock( final Field field ) {
-		field.setAccessible( true );
+	private void verifyRecheckExists() {
+		if ( null == recheck ) {
+			throw new IllegalStateException(
+					String.format( "%s element missing. Provide a %s element via constructor or setter method.",
+							recheckClass(), recheckClass() ) );
+		}
 	}
 
-	private void lock( final Field field ) {
-		field.setAccessible( false );
+	public void use( final Recheck recheck ) {
+		if ( null == recheck ) {
+			throw new IllegalArgumentException( String.format( "%s element missing.", recheckClass() ) );
+		}
+		this.recheck = recheck;
+		recheck.startTest( currentTest );
 	}
 
+	private static String recheckClass() {
+		return Recheck.class.getSimpleName();
+	}
 }

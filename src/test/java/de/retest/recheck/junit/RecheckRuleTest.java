@@ -1,12 +1,14 @@
 package de.retest.recheck.junit;
 
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
@@ -15,50 +17,95 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import de.retest.recheck.Recheck;
-import de.retest.recheck.RecheckLifecycle;
 
 @RunWith( MockitoJUnitRunner.class )
 public class RecheckRuleTest {
 
+	private static final String testName = "dummyTest";
+
 	public class DummyTest {
 
-		private Object nonRecheck;
-		private RecheckLifecycle recheckLifecycle;
-		private Recheck recheck;
 	}
 
+	@Rule
+	public ExpectedException expect = ExpectedException.none();
 	@Mock
 	private Statement base;
-	private DummyTest testInstance;
-	private Statement statement;
+	@Mock
+	private Recheck recheck;
 	private Description description;
 
 	@Before
 	public void before() {
-		testInstance = new DummyTest();
-		testInstance.recheckLifecycle = mock( RecheckLifecycle.class );
-		testInstance.recheck = mock( Recheck.class );
-		testInstance.nonRecheck = mock( Object.class );
-		description = Description.createTestDescription( testInstance.getClass(), "dummy-instance" );
-		statement = new RecheckRule( testInstance ).apply( base, description );
+		recheck = mock( Recheck.class );
+		description = Description.createTestDescription( DummyTest.class, testName );
 	}
 
 	@Test
-	public void callsLifecycleMethods() throws Throwable {
-		final InOrder inOrder = inOrder( testInstance.recheckLifecycle, testInstance.recheck, base );
+	public void callsLifecycleMethodsWithInstantiatedRule() throws Throwable {
+		final InOrder inOrder = inOrder( recheck, base );
 
-		statement.evaluate();
+		final RecheckRule rule = new RecheckRule( recheck );
 
-		inOrder.verify( testInstance.recheckLifecycle ).startTest( description.getDisplayName() );
-		inOrder.verify( testInstance.recheck ).startTest( description.getDisplayName() );
+		rule.apply( base, description ).evaluate();
+
+		inOrder.verify( recheck ).startTest( testName );
 		inOrder.verify( base ).evaluate();
-		inOrder.verify( testInstance.recheckLifecycle ).capTest();
-		inOrder.verify( testInstance.recheck ).capTest();
+		inOrder.verify( recheck ).capTest();
+		inOrder.verify( recheck ).cap();
 	}
 
-	@After
-	public void after() {
-		verifyZeroInteractions( testInstance.nonRecheck );
+	@Test
+	public void failsForMissingRecheckElement() throws Throwable {
+		final RecheckRule rule = new RecheckRule();
+
+		expect.expect( IllegalStateException.class );
+		rule.apply( base, description ).evaluate();
+	}
+
+	@Test
+	public void callsLifecycleMethodsWithSetter() throws Throwable {
+		final InOrder inOrder = inOrder( recheck, base );
+
+		final RecheckRule rule = new RecheckRule();
+
+		doAnswer( i -> {
+			rule.use( recheck );
+			return null;
+		} ).when( base ).evaluate();
+		rule.apply( base, description ).evaluate();
+
+		inOrder.verify( base ).evaluate();
+		inOrder.verify( recheck ).startTest( testName );
+		inOrder.verify( recheck ).capTest();
+		inOrder.verify( recheck ).cap();
+	}
+
+	@Test
+	public void useRequiresRecheckElement() throws Exception {
+		final RecheckRule rule = new RecheckRule();
+
+		expect.expect( IllegalArgumentException.class );
+		rule.use( null );
+	}
+
+	@Test
+	public void ensureCapIsCalledOnFailingTest() throws Throwable {
+		final InOrder inOrder = inOrder( recheck, base );
+		doThrow( new IllegalStateException() ).when( recheck ).capTest();
+
+		final RecheckRule rule = new RecheckRule( recheck );
+
+		try {
+			rule.apply( base, description ).evaluate();
+		} catch ( final IllegalStateException e ) {
+			// ignore exception
+		}
+
+		inOrder.verify( recheck ).startTest( testName );
+		inOrder.verify( base ).evaluate();
+		inOrder.verify( recheck ).capTest();
+		inOrder.verify( recheck ).cap();
 	}
 
 }

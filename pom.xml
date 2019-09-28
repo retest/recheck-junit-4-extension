@@ -1,9 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.retest</groupId>
-  <artifactId>recheck-junit-4</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.retest</groupId>
+	<artifactId>recheck-junit-4-extension</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>recheck</name>
+	<description>JUnit 4 extension reducing boiler plate code in tests.</description>
+	<url>https://retest.de/</url>
+
+	<organization>
+		<name>ReTest GmbH</name>
+		<url>https://retest.de/</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License (AGPL), Version 3</name>
+			<url>https://gnu.org/licenses/agpl-3.0.html</url>
+		</license>
+	</licenses>
+
+	<properties>
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
@@ -27,7 +46,7 @@
 			<version>4.12</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- test dependencies -->
 
 		<dependency>

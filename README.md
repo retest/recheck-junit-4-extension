@@ -40,3 +40,7 @@ public void before() {
 
 ### Prerequisites
 Requires JUnit 4. For JUnit Jupiter support look at [recheck extension for JUnit Jupiter](https://github.com/retest/recheck-junit-jupiter-extension)
+
+## License
+
+This project is licensed under the [AGPL license](LICENSE).

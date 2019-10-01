@@ -1,6 +1,7 @@
 # <a href="https://retest.dev"><img src="https://assets.retest.org/retest/ci/logos/recheck-screen.svg" width="300"/></a>
 
 [![Build Status](https://travis-ci.com/retest/recheck-junit-4-extension.svg?branch=master)](https://travis-ci.com/retest/recheck-junit-4-extension)
+[![license](https://img.shields.io/badge/license-AGPL-brightgreen.svg)](https://github.com/retest/recheck-junit-4-extension/blob/master/LICENSE)
 
 JUnit 4 extension for [recheck](https://github.com/retest/recheck). Automatic set up and tear down of tests using recheck.
 

@@ -1,4 +1,4 @@
-package de.retest.recheck.junit;
+package de.retest.recheck.junit.vintage;
 
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;

@@ -110,8 +110,7 @@
 							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 						<manifestEntries>
-							<!-- TODO must not be the same as Jupiter extension -->
-							<Automatic-Module-Name>de.retest.recheck.junit</Automatic-Module-Name>
+							<Automatic-Module-Name>de.retest.recheck.junit.vintage</Automatic-Module-Name>
 						</manifestEntries>
 					</archive>
 				</configuration>

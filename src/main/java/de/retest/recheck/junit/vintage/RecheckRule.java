@@ -1,4 +1,4 @@
-package de.retest.recheck.junit;
+package de.retest.recheck.junit.vintage;
 
 import org.junit.Rule;
 import org.junit.rules.TestRule;

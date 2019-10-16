@@ -24,7 +24,7 @@ Recheck JUnit extension defines a JUnit 4 Rule. The rule needs to know the insta
 
 ### Recheck instance given during construction
 
-```
+```java
 private RecheckLifecycle re = new RecheckImpl();
 @Rule
 public RecheckRule recheckRule = new RecheckRule(re);
@@ -32,7 +32,7 @@ public RecheckRule recheckRule = new RecheckRule(re);
 
 ### Recheck instance given during setup
 
-```
+```java
 @Rule
 public RecheckRule recheckRule = new RecheckRule();
 private RecheckLifecycle re;

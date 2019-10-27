@@ -6,7 +6,7 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](https://github.com/retest/recheck-junit-4-extension/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 [![code with hearth by retest](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-retest-C1D82F.svg)](https://retest.de/)
 
-JUnit 4 extension for [recheck](https://github.com/retest/recheck). Automatic set up and tear down of tests using recheck.
+[JUnit 4](https://junit.org/junit4/) extension for [recheck](https://github.com/retest/recheck). Automatic set up and tear down of tests using recheck.
 
 ## Features
 

@@ -6,7 +6,7 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](https://github.com/retest/recheck-junit-4-extension/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
 [![code with hearth by retest](https://img.shields.io/badge/%3C%2F%3E%20with%20%E2%99%A5%20by-retest-C1D82F.svg)](https://retest.de/)
 
-JUnit 4 extension for [recheck](https://github.com/retest/recheck). Automatic set up and tear down of tests using recheck.
+[JUnit 4](https://junit.org/junit4/) extension for [recheck](https://github.com/retest/recheck). Automatic set up and tear down of tests using recheck.
 
 ## Features
 
@@ -42,12 +42,15 @@ compile 'de.retest:recheck-junit-4-extension:${LATEST_VERSION_FROM_ABOVE_LINK}'
 
 ## Usage
 
-Recheck JUnit extension defines a JUnit 4 Rule. The rule needs to know the instance of the used `RecheckLifecycle` element. The instance can be given during construction or afterwards during setup. The following code demonstrates both ways.
+Recheck JUnit extension defines a [JUnit 4 Rule](https://github.com/junit-team/junit4/wiki/Rules). The rule needs to know the instance of the used `RecheckLifecycle` element. The instance can be given during construction or afterwards during setup. The following code demonstrates both ways.
 
 ### Recheck instance given during construction
 
 ```java
+// Define RecheckLifecycle instance before Rule
 private RecheckLifecycle re = new RecheckImpl();
+
+// Let rule know which RecheckLifecycle instance should be administered
 @Rule
 public RecheckRule recheckRule = new RecheckRule(re);
 ```
@@ -62,13 +65,15 @@ private RecheckLifecycle re;
 @Before
 public void before() {
 	re = new RecheckImpl();
+	
+	// Let rule know which RecheckLifecycle instance should be administered
 	recheckRule.use(re);
 }
 ```
 
 ### Prerequisites
 
-Requires JUnit 4. For JUnit Jupiter support look at [recheck extension for JUnit Jupiter](https://github.com/retest/recheck-junit-jupiter-extension).
+Requires [JUnit 4](https://mvnrepository.com/artifact/junit/junit). For [JUnit Jupiter](https://junit.org/junit5/) support look at [recheck extension for JUnit Jupiter](https://github.com/retest/recheck-junit-jupiter-extension).
 
 ## License
 

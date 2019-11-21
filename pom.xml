@@ -3,7 +3,7 @@
 
 	<groupId>de.retest</groupId>
 	<artifactId>recheck-junit-4-extension</artifactId>
-	<version>1.7.0-SNAPSHOT</version>
+	<version>1.8.0-SNAPSHOT</version>
 
 	<name>recheck-junit-4-extension</name>
 	<description>JUnit 4 extension reducing boilerplate code in tests.</description>
@@ -54,7 +54,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.resources.sourceEncoding>UTF-8</project.resources.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<recheck.version>1.6.0</recheck.version>
+		<recheck.version>1.7.0</recheck.version>
 		<service.declaration.dir>src</service.declaration.dir>
 		<service.files.path>META-INF/services</service.files.path>
 	</properties>

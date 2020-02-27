@@ -5,7 +5,6 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import de.retest.recheck.Recheck;
 import de.retest.recheck.RecheckLifecycle;
 
 /**
@@ -14,16 +13,16 @@ import de.retest.recheck.RecheckLifecycle;
  */
 public class RecheckRule implements TestRule {
 
-	private Recheck recheck;
+	private RecheckLifecycle recheckLifecycle;
 	private String currentTest;
 
 	/**
-	 * @param recheck
+	 * @param recheckLifecycle
 	 *            {@link RecheckLifecycle} element to call lifecycle methods on
 	 */
-	public RecheckRule( final Recheck recheck ) {
+	public RecheckRule( final RecheckLifecycle recheckLifecycle ) {
 		super();
-		this.recheck = recheck;
+		this.recheckLifecycle = recheckLifecycle;
 	}
 
 	public RecheckRule() {
@@ -63,37 +62,37 @@ public class RecheckRule implements TestRule {
 	}
 
 	private void before( final String testName ) throws Throwable {
-		if ( null != recheck ) {
-			recheck.startTest( testName );
+		if ( null != recheckLifecycle ) {
+			recheckLifecycle.startTest( testName );
 		}
 	}
 
 	private void after() throws IllegalArgumentException, IllegalAccessException {
 		verifyRecheckExists();
 		try {
-			recheck.capTest();
+			recheckLifecycle.capTest();
 		} finally {
-			recheck.cap();
+			recheckLifecycle.cap();
 		}
 	}
 
 	private void verifyRecheckExists() {
-		if ( null == recheck ) {
+		if ( null == recheckLifecycle ) {
 			throw new IllegalStateException(
 					String.format( "%s element missing. Provide a %s element via constructor or setter method.",
 							recheckClass(), recheckClass() ) );
 		}
 	}
 
-	public void use( final Recheck recheck ) {
-		if ( null == recheck ) {
+	public void use( final RecheckLifecycle recheckLifecycle ) {
+		if ( null == recheckLifecycle ) {
 			throw new IllegalArgumentException( String.format( "%s element missing.", recheckClass() ) );
 		}
-		this.recheck = recheck;
-		recheck.startTest( currentTest );
+		this.recheckLifecycle = recheckLifecycle;
+		recheckLifecycle.startTest( currentTest );
 	}
 
 	private static String recheckClass() {
-		return Recheck.class.getSimpleName();
+		return RecheckLifecycle.class.getSimpleName();
 	}
 }

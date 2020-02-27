@@ -16,7 +16,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import de.retest.recheck.Recheck;
+import de.retest.recheck.RecheckLifecycle;
 
 @RunWith( MockitoJUnitRunner.class )
 public class RecheckRuleTest {
@@ -32,27 +32,27 @@ public class RecheckRuleTest {
 	@Mock
 	private Statement base;
 	@Mock
-	private Recheck recheck;
+	private RecheckLifecycle recheckLifecycle;
 	private Description description;
 
 	@Before
 	public void before() {
-		recheck = mock( Recheck.class );
+		recheckLifecycle = mock( RecheckLifecycle.class );
 		description = Description.createTestDescription( DummyTest.class, testName );
 	}
 
 	@Test
 	public void callsLifecycleMethodsWithInstantiatedRule() throws Throwable {
-		final InOrder inOrder = inOrder( recheck, base );
+		final InOrder inOrder = inOrder( recheckLifecycle, base );
 
-		final RecheckRule rule = new RecheckRule( recheck );
+		final RecheckRule rule = new RecheckRule( recheckLifecycle );
 
 		rule.apply( base, description ).evaluate();
 
-		inOrder.verify( recheck ).startTest( testName );
+		inOrder.verify( recheckLifecycle ).startTest( testName );
 		inOrder.verify( base ).evaluate();
-		inOrder.verify( recheck ).capTest();
-		inOrder.verify( recheck ).cap();
+		inOrder.verify( recheckLifecycle ).capTest();
+		inOrder.verify( recheckLifecycle ).cap();
 	}
 
 	@Test
@@ -65,20 +65,20 @@ public class RecheckRuleTest {
 
 	@Test
 	public void callsLifecycleMethodsWithSetter() throws Throwable {
-		final InOrder inOrder = inOrder( recheck, base );
+		final InOrder inOrder = inOrder( recheckLifecycle, base );
 
 		final RecheckRule rule = new RecheckRule();
 
 		doAnswer( i -> {
-			rule.use( recheck );
+			rule.use( recheckLifecycle );
 			return null;
 		} ).when( base ).evaluate();
 		rule.apply( base, description ).evaluate();
 
 		inOrder.verify( base ).evaluate();
-		inOrder.verify( recheck ).startTest( testName );
-		inOrder.verify( recheck ).capTest();
-		inOrder.verify( recheck ).cap();
+		inOrder.verify( recheckLifecycle ).startTest( testName );
+		inOrder.verify( recheckLifecycle ).capTest();
+		inOrder.verify( recheckLifecycle ).cap();
 	}
 
 	@Test
@@ -91,10 +91,10 @@ public class RecheckRuleTest {
 
 	@Test
 	public void ensureCapIsCalledOnFailingTest() throws Throwable {
-		final InOrder inOrder = inOrder( recheck, base );
-		doThrow( new IllegalStateException() ).when( recheck ).capTest();
+		final InOrder inOrder = inOrder( recheckLifecycle, base );
+		doThrow( new IllegalStateException() ).when( recheckLifecycle ).capTest();
 
-		final RecheckRule rule = new RecheckRule( recheck );
+		final RecheckRule rule = new RecheckRule( recheckLifecycle );
 
 		try {
 			rule.apply( base, description ).evaluate();
@@ -102,10 +102,10 @@ public class RecheckRuleTest {
 			// ignore exception
 		}
 
-		inOrder.verify( recheck ).startTest( testName );
+		inOrder.verify( recheckLifecycle ).startTest( testName );
 		inOrder.verify( base ).evaluate();
-		inOrder.verify( recheck ).capTest();
-		inOrder.verify( recheck ).cap();
+		inOrder.verify( recheckLifecycle ).capTest();
+		inOrder.verify( recheckLifecycle ).cap();
 	}
 
 }

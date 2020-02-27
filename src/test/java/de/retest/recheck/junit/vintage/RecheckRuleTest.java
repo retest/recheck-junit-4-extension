@@ -1,14 +1,13 @@
 package de.retest.recheck.junit.vintage;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
@@ -27,8 +26,6 @@ public class RecheckRuleTest {
 
 	}
 
-	@Rule
-	public ExpectedException expect = ExpectedException.none();
 	@Mock
 	private Statement base;
 	@Mock
@@ -59,8 +56,7 @@ public class RecheckRuleTest {
 	public void failsForMissingRecheckElement() throws Throwable {
 		final RecheckRule rule = new RecheckRule();
 
-		expect.expect( IllegalStateException.class );
-		rule.apply( base, description ).evaluate();
+		assertThatCode( () -> rule.apply( base, description ).evaluate() ).isInstanceOf( IllegalStateException.class );
 	}
 
 	@Test
@@ -85,8 +81,7 @@ public class RecheckRuleTest {
 	public void useRequiresRecheckElement() throws Exception {
 		final RecheckRule rule = new RecheckRule();
 
-		expect.expect( IllegalArgumentException.class );
-		rule.use( null );
+		assertThatCode( () -> rule.use( null ) ).isInstanceOf( IllegalArgumentException.class );
 	}
 
 	@Test

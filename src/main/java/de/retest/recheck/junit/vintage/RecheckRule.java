@@ -10,8 +10,8 @@ import org.junit.runners.model.Statement;
 import de.retest.recheck.RecheckLifecycle;
 
 /**
- * This {@link Rule} calls {@link RecheckLifecycle#startTest()} before and {@link RecheckLifecycle#capTest()} after each
- * test.
+ * This {@link Rule} calls {@link RecheckLifecycle#startTest()} before and {@link RecheckLifecycle#capTest()} as well as
+ * {@link RecheckLifecycle#cap()} after each test.
  */
 public class RecheckRule implements TestRule {
 
@@ -22,20 +22,28 @@ public class RecheckRule implements TestRule {
 	private String currentTest;
 
 	/**
+	 * Constructs a new {@code RecheckRule} using the given {@link RecheckLifecycle}.
+	 *
 	 * @param recheckLifecycle
-	 *            {@link RecheckLifecycle} element to call lifecycle methods on
+	 *            {@link RecheckLifecycle} element to call lifecycle methods on.
 	 */
 	public RecheckRule( final RecheckLifecycle recheckLifecycle ) {
 		this.recheckLifecycle = recheckLifecycle;
 	}
 
+	/**
+	 * Constructs a new {@code RecheckRule}. Make sure to set the {@link RecheckLifecycle} via
+	 * {@link #use(RecheckLifecycle)} before usage.
+	 */
 	public RecheckRule() {
 		this( null );
 	}
 
 	/**
-	 * Creates a {@link Statement} calling {@link RecheckLifecycle#startTest()} before and
-	 * {@link RecheckLifecycle#capTest()} after evaluating the given {@link Statement}.
+	 * Creates a {@code Statement} calling {@link RecheckLifecycle#startTest()} before and
+	 * {@link RecheckLifecycle#capTest()} as well as {@link RecheckLifecycle#cap()} after evaluating the given
+	 * {@code Statement}.
+	 *
 	 */
 	@Override
 	public Statement apply( final Statement base, final Description description ) {

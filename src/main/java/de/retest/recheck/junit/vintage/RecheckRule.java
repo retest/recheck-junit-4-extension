@@ -79,19 +79,19 @@ public class RecheckRule implements TestRule {
 		if ( null == recheckLifecycle ) {
 			throw new IllegalStateException(
 					String.format( "%s element missing. Provide a %s element via constructor or setter method.",
-							recheckClass(), recheckClass() ) );
+							recheckLifecycle(), recheckLifecycle() ) );
 		}
 	}
 
 	public void use( final RecheckLifecycle recheckLifecycle ) {
 		if ( null == recheckLifecycle ) {
-			throw new IllegalArgumentException( String.format( "%s element missing.", recheckClass() ) );
+			throw new IllegalArgumentException( String.format( "%s element missing.", recheckLifecycle() ) );
 		}
 		this.recheckLifecycle = recheckLifecycle;
 		recheckLifecycle.startTest( currentTest );
 	}
 
-	private static String recheckClass() {
+	private static String recheckLifecycle() {
 		return RecheckLifecycle.class.getSimpleName();
 	}
 }

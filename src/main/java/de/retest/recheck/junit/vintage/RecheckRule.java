@@ -21,7 +21,6 @@ public class RecheckRule implements TestRule {
 	 *            {@link RecheckLifecycle} element to call lifecycle methods on
 	 */
 	public RecheckRule( final RecheckLifecycle recheckLifecycle ) {
-		super();
 		this.recheckLifecycle = recheckLifecycle;
 	}
 

@@ -1,7 +1,6 @@
 package de.retest.recheck.junit.vintage;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -56,7 +55,7 @@ public class RecheckRuleTest {
 	public void failsForMissingRecheckElement() throws Throwable {
 		final RecheckRule rule = new RecheckRule();
 
-		assertThatCode( () -> rule.apply( base, description ).evaluate() ).isInstanceOf( IllegalStateException.class );
+		assertThatCode( () -> rule.apply( base, description ).evaluate() ).isInstanceOf( NullPointerException.class );
 	}
 
 	@Test
@@ -64,15 +63,12 @@ public class RecheckRuleTest {
 		final InOrder inOrder = inOrder( recheckLifecycle, base );
 
 		final RecheckRule rule = new RecheckRule();
+		rule.use( recheckLifecycle );
 
-		doAnswer( i -> {
-			rule.use( recheckLifecycle );
-			return null;
-		} ).when( base ).evaluate();
 		rule.apply( base, description ).evaluate();
 
-		inOrder.verify( base ).evaluate();
 		inOrder.verify( recheckLifecycle ).startTest( testName );
+		inOrder.verify( base ).evaluate();
 		inOrder.verify( recheckLifecycle ).capTest();
 		inOrder.verify( recheckLifecycle ).cap();
 	}
@@ -81,7 +77,7 @@ public class RecheckRuleTest {
 	public void useRequiresRecheckElement() throws Exception {
 		final RecheckRule rule = new RecheckRule();
 
-		assertThatCode( () -> rule.use( null ) ).isInstanceOf( IllegalArgumentException.class );
+		assertThatCode( () -> rule.use( null ) ).isInstanceOf( NullPointerException.class );
 	}
 
 	@Test

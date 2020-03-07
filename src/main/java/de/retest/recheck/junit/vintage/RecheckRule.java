@@ -1,5 +1,7 @@
 package de.retest.recheck.junit.vintage;
 
+import java.util.Objects;
+
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -12,6 +14,9 @@ import de.retest.recheck.RecheckLifecycle;
  * test.
  */
 public class RecheckRule implements TestRule {
+
+	private static final String NPE_EXCEPTION_MESSAGE = RecheckLifecycle.class.getSimpleName()
+			+ " must not be null. Set it via this rule's constructor or the use method.";
 
 	private RecheckLifecycle recheckLifecycle;
 	private String currentTest;
@@ -61,13 +66,13 @@ public class RecheckRule implements TestRule {
 	}
 
 	private void before( final String testName ) throws Throwable {
-		if ( null != recheckLifecycle ) {
-			recheckLifecycle.startTest( testName );
+		if ( recheckLifecycle == null ) {
+			throw new NullPointerException( NPE_EXCEPTION_MESSAGE );
 		}
+		recheckLifecycle.startTest( testName );
 	}
 
 	private void after() throws IllegalArgumentException, IllegalAccessException {
-		verifyRecheckExists();
 		try {
 			recheckLifecycle.capTest();
 		} finally {
@@ -75,23 +80,9 @@ public class RecheckRule implements TestRule {
 		}
 	}
 
-	private void verifyRecheckExists() {
-		if ( null == recheckLifecycle ) {
-			throw new IllegalStateException(
-					String.format( "%s element missing. Provide a %s element via constructor or setter method.",
-							recheckLifecycle(), recheckLifecycle() ) );
-		}
-	}
-
 	public void use( final RecheckLifecycle recheckLifecycle ) {
-		if ( null == recheckLifecycle ) {
-			throw new IllegalArgumentException( String.format( "%s element missing.", recheckLifecycle() ) );
-		}
-		this.recheckLifecycle = recheckLifecycle;
+		this.recheckLifecycle = Objects.requireNonNull( recheckLifecycle, NPE_EXCEPTION_MESSAGE );
 		recheckLifecycle.startTest( currentTest );
 	}
 
-	private static String recheckLifecycle() {
-		return RecheckLifecycle.class.getSimpleName();
-	}
 }

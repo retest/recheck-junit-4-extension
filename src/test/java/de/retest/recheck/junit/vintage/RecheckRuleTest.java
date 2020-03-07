@@ -52,7 +52,7 @@ public class RecheckRuleTest {
 	}
 
 	@Test
-	public void failsForMissingRecheckElement() throws Throwable {
+	public void failsForMissingRecheckElement() throws Exception {
 		final RecheckRule rule = new RecheckRule();
 
 		assertThatCode( () -> rule.apply( base, description ).evaluate() ).isInstanceOf( NullPointerException.class );

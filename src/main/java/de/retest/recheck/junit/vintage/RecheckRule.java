@@ -65,14 +65,14 @@ public class RecheckRule implements TestRule {
 		return baseName.substring( 0, index );
 	}
 
-	private void before( final String testName ) throws Throwable {
+	private void before( final String testName ) {
 		if ( recheckLifecycle == null ) {
 			throw new NullPointerException( NPE_EXCEPTION_MESSAGE );
 		}
 		recheckLifecycle.startTest( testName );
 	}
 
-	private void after() throws IllegalArgumentException, IllegalAccessException {
+	private void after() {
 		try {
 			recheckLifecycle.capTest();
 		} finally {

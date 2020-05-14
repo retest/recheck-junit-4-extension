@@ -74,10 +74,9 @@ public class RecheckRule implements TestRule {
 	}
 
 	private void before( final String testName ) {
-		if ( recheckLifecycle == null ) {
-			throw new NullPointerException( NPE_EXCEPTION_MESSAGE );
+		if ( recheckLifecycle != null ) {
+			recheckLifecycle.startTest( testName );
 		}
-		recheckLifecycle.startTest( testName );
 	}
 
 	private void after() {

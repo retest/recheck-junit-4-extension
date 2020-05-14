@@ -3,7 +3,7 @@
 
 	<groupId>de.retest</groupId>
 	<artifactId>recheck-junit-4-extension</artifactId>
-	<version>1.11.0-SNAPSHOT</version>
+	<version>1.11.0-beta.1</version>
 
 	<name>recheck-junit-4-extension</name>
 	<description>JUnit 4 extension reducing boilerplate code in tests.</description>
@@ -63,7 +63,7 @@
 		<url>https://github.com/retest/recheck-junit-4-extension</url>
 		<connection>scm:git:git@github.com:retest/recheck-junit-4-extension.git</connection>
 		<developerConnection>scm:git:git@github.com:retest/recheck-junit-4-extension.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>v1.11.0-beta.1</tag>
 	</scm>
 
 	<distributionManagement>

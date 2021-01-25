@@ -1,6 +1,6 @@
 # <a href="https://retest.dev"><img src="https://assets.retest.org/retest/ci/logos/recheck-screen.svg" width="300"/></a>
 
-[![Build Status](https://travis-ci.com/retest/recheck-junit-4-extension.svg?branch=master)](https://travis-ci.com/retest/recheck-junit-4-extension)
+[![Build Status](https://github.com/retest/recheck-junit-4-extension/workflows/build/badge.svg)](https://github.com/retest/recheck-junit-4-extension/actions?query=workflow%3Abuild)
 [![Latest recheck-junit-4-extension on Maven Central](https://maven-badges.herokuapp.com/maven-central/de.retest/recheck-junit-4-extension/badge.svg?style=flat)](https://mvnrepository.com/artifact/de.retest/recheck-junit-4-extension)
 [![Latest recheck-junit-4-extension releases on JitPack](https://jitpack.io/v/de.retest/recheck-junit-4-extension.svg)](https://jitpack.io/#de.retest/recheck-junit-4-extension)
 [![license](https://img.shields.io/badge/license-AGPL-brightgreen.svg)](https://github.com/retest/recheck-junit-4-extension/blob/master/LICENSE)
